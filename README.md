@@ -12,7 +12,7 @@ Welcome to the Advent of Code[^aoc] project completed by [giuxtaposition][github
 | :calendar: :christmas_tree: |       :one:        |       :two:        |                                    :computer:                                    |
 | :-------------------------: | :----------------: | :----------------: | :------------------------------------------------------------------------------: |
 |            Day 1            | :heavy_check_mark: | :heavy_check_mark: | [solution](https://github.com/giuxtaposition/advent-of-code-2022/tree/main/day1) |
-|            Day 2            |                    |                    |                                                                                  |
+|            Day 2            | :heavy_check_mark: | :heavy_check_mark: | [solution](https://github.com/giuxtaposition/advent-of-code-2022/tree/main/day2) |
 |            Day 3            |                    |                    |                                                                                  |
 |            Day 4            |                    |                    |                                                                                  |
 |            Day 5            |                    |                    |                                                                                  |
