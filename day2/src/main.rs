@@ -1,4 +1,4 @@
-use day2::rounds_points_calculator;
+use day2::{rounds_points_calculator_part1, rounds_points_calculator_part2};
 use std::fs;
 
 fn main() {
@@ -6,6 +6,11 @@ fn main() {
 
     println!(
         "Player points after following strategy guide:{:?}",
-        rounds_points_calculator(contents)
+        rounds_points_calculator_part1(&contents)
     );
+
+    println!(
+        "Player points after following strategy guide 2: {:?}",
+        rounds_points_calculator_part2(&contents)
+    )
 }
