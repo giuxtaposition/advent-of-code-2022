@@ -42,17 +42,11 @@ fn sum_of_overlap(
 }
 
 fn one_of_partially_contained_in(a: (i32, i32), b: (i32, i32)) -> bool {
-    match (a, b) {
-        (a, b) if !partially_contained_in(a, b) || !partially_contained_in(b, a) => false,
-        (_, _) => true,
-    }
+    partially_contained_in(a, b) || partially_contained_in(b, a)
 }
 
 fn one_of_fully_contained_in(a: (i32, i32), b: (i32, i32)) -> bool {
-    match (a, b) {
-        (a, b) if fully_contained_in(a, b) || fully_contained_in(b, a) => true,
-        (_, _) => false,
-    }
+    fully_contained_in(a, b) || fully_contained_in(b, a)
 }
 
 fn fully_contained_in(a: (i32, i32), b: (i32, i32)) -> bool {
@@ -60,7 +54,7 @@ fn fully_contained_in(a: (i32, i32), b: (i32, i32)) -> bool {
 }
 
 fn partially_contained_in(a: (i32, i32), b: (i32, i32)) -> bool {
-    a.0 >= b.0 || a.1 >= b.0
+    (a.0 >= b.0 || a.1 >= b.0) && (a.0 <= b.0 || a.1 <= b.0)
 }
 
 #[cfg(test)]
