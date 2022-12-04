@@ -13,8 +13,8 @@ Welcome to the Advent of Code[^aoc] project completed by [giuxtaposition][github
 | :-------------------------: | :----------------: | :----------------: | :------------------------------------------------------------------------------: |
 |            Day 1            | :heavy_check_mark: | :heavy_check_mark: | [solution](https://github.com/giuxtaposition/advent-of-code-2022/tree/main/day1) |
 |            Day 2            | :heavy_check_mark: | :heavy_check_mark: | [solution](https://github.com/giuxtaposition/advent-of-code-2022/tree/main/day2) |
-|            Day 3            |                    |                    |                                                                                  |
-|            Day 4            |                    |                    |                                                                                  |
+|            Day 3            | :heavy_check_mark: | :heavy_check_mark: | [solution](https://github.com/giuxtaposition/advent-of-code-2022/tree/main/day3) |
+|            Day 4            | :heavy_check_mark: | :heavy_check_mark: | [solution](https://github.com/giuxtaposition/advent-of-code-2022/tree/main/day4) |
 |            Day 5            |                    |                    |                                                                                  |
 |            Day 6            |                    |                    |                                                                                  |
 |            Day 7            |                    |                    |                                                                                  |
