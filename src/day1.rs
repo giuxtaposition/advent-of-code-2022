@@ -13,13 +13,12 @@ fn calories_calculator(calories_list: String) -> Vec<i32> {
     for line in calories_list.lines() {
         match line.is_empty() {
             true => {
-                index = index + 1;
+                index += 1;
                 sum.push(0)
             }
             false => {
                 let calorie = line.parse::<i32>().unwrap();
-
-                sum[index] = sum[index] + calorie;
+                sum[index] += calorie;
             }
         }
     }
@@ -28,7 +27,6 @@ fn calories_calculator(calories_list: String) -> Vec<i32> {
 
 fn sum_of_greatest_numbers(mut numbers: Vec<i32>, number_of_results: usize) -> i32 {
     numbers.sort_by(|a, b| b.partial_cmp(a).unwrap());
-
     numbers.split_at(number_of_results).0.to_vec().iter().sum()
 }
 

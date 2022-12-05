@@ -37,7 +37,7 @@ pub fn part1_rounds_points_calculator(rounds: String) -> i32 {
     rounds
         .lines()
         .map(|round| {
-            let shapes: Vec<Shape> = round.split(" ").map(Into::into).collect();
+            let shapes: Vec<Shape> = round.split(' ').map(Into::into).collect();
             round_points_calculator(*shapes.get(0).unwrap(), *shapes.get(1).unwrap())
         })
         .sum()
@@ -47,8 +47,8 @@ pub fn part2_rounds_points_calculator(rounds: String) -> i32 {
     rounds
         .lines()
         .map(|round| {
-            let shapes: Vec<&str> = round.split(" ").collect();
-            let opponent_hand = Shape::from(*shapes.get(0).unwrap());
+            let shapes: Vec<&str> = round.split(' ').collect();
+            let opponent_hand = Shape::from(*shapes.first().unwrap());
             let player_hand = RoundResult::from(*shapes.get(1).unwrap());
 
             round_points_calculator(

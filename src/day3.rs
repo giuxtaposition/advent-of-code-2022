@@ -4,9 +4,9 @@ pub fn part2_priorities_sum(input: String) -> i32 {
         .collect::<Vec<&str>>()
         .chunks(3)
         .map(|group| {
-            let strings = group.into_iter().map(ToString::to_string).collect();
+            let strings = group.iter().map(ToString::to_string).collect();
 
-            priority(common(strings))
+            priority(common(strings) as u8)
         })
         .sum()
 }
@@ -17,19 +17,17 @@ pub fn part1_priorities_sum(input: String) -> i32 {
         .into_iter()
         .map(|line| {
             let items = slice_in_half(line.to_string());
-            let common = common(items);
-            return priority(common);
+
+            priority(common(items) as u8)
         })
         .sum()
 }
 
-fn priority(item: String) -> i32 {
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        .split("")
-        .position(|char| char == item)
-        .unwrap()
-        .try_into()
-        .unwrap()
+fn priority(item: u8) -> i32 {
+    match item {
+        b'a'..=b'z' => ((item - b'a') + 1) as i32,
+        _ => ((item - b'A') + 1 + 26) as i32,
+    }
 }
 
 fn slice_in_half(string: String) -> Vec<String> {
@@ -41,14 +39,13 @@ fn slice_in_half(string: String) -> Vec<String> {
     vec![split.0.to_string(), split.1.to_string()]
 }
 
-fn common(mut strings: Vec<String>) -> String {
+fn common(mut strings: Vec<String>) -> char {
     strings
         .pop()
         .unwrap()
         .chars()
         .find(|&a| strings.iter().all(|string| string.contains(a)))
         .unwrap_or_else(|| panic!("Could not find common char"))
-        .to_string()
 }
 
 #[cfg(test)]
@@ -60,7 +57,7 @@ mod tests {
         let a = "vJrwpWtwJgWr".to_string();
         let b = "hcsFMMfFFhFp".to_string();
 
-        assert_eq!(common(vec![a, b]), "p")
+        assert_eq!(common(vec![a, b]), 'p')
     }
 
     #[test]
@@ -76,12 +73,12 @@ mod tests {
 
     #[test]
     fn find_priority_from_items() {
-        let items = vec!["p", "L", "P", "v", "t", "s"];
+        let items = vec!['p', 'L', 'P', 'v', 't', 's'];
         let expected_priorities = vec![16, 38, 42, 22, 20, 19];
 
         for (index, item) in items.iter().enumerate() {
             assert_eq!(
-                priority(item.to_string()),
+                priority(item.to_owned() as u8),
                 expected_priorities.get(index).unwrap().to_owned()
             )
         }
@@ -100,7 +97,7 @@ mod tests {
         let b = "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL".to_string();
         let c = "PmmdzqPrVvPwwTWBwg".to_string();
 
-        assert_eq!(common(vec![a, b, c]), "r")
+        assert_eq!(common(vec![a, b, c]), 'r')
     }
 
     #[test]

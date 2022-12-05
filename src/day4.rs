@@ -1,9 +1,9 @@
 pub fn part1_sum_of_overlap(assignments: String) -> usize {
-    sum_of_overlap(assignments, one_of_fully_contained_in)
+    sum_of_overlap(assignments, fully_contained_in)
 }
 
 pub fn part2_sum_of_overlap(assignments: String) -> usize {
-    sum_of_overlap(assignments, one_of_partially_contained_in)
+    sum_of_overlap(assignments, partially_contained_in)
 }
 
 fn sum_of_overlap(
@@ -12,34 +12,18 @@ fn sum_of_overlap(
 ) -> usize {
     input
         .lines()
-        .map(|line| {
-            let pairs: Vec<(i32, i32)> = line
-                .split(",")
-                .map(|pair| {
-                    let mut split = pair.split("-").map(str::parse::<i32>);
+        .filter(|line| {
+            let (elf1, elf2) = line.split_once(',').unwrap();
+            let (elf1_range, elf2_range) = (get_range(elf1), get_range(elf2));
 
-                    (
-                        split.next().unwrap().unwrap(),
-                        split.next().unwrap().unwrap(),
-                    )
-                })
-                .collect();
-
-            overlap_function(
-                pairs.get(0).unwrap().to_owned(),
-                pairs.get(1).unwrap().to_owned(),
-            )
+            overlap_function(elf1_range, elf2_range) || overlap_function(elf2_range, elf1_range)
         })
-        .filter(|value| *value == true)
         .count()
 }
 
-fn one_of_partially_contained_in(a: (i32, i32), b: (i32, i32)) -> bool {
-    partially_contained_in(a, b) || partially_contained_in(b, a)
-}
-
-fn one_of_fully_contained_in(a: (i32, i32), b: (i32, i32)) -> bool {
-    fully_contained_in(a, b) || fully_contained_in(b, a)
+fn get_range(input: &str) -> (i32, i32) {
+    let (min, max) = input.split_once('-').unwrap();
+    (min.parse().unwrap(), max.parse().unwrap())
 }
 
 fn fully_contained_in(a: (i32, i32), b: (i32, i32)) -> bool {
@@ -55,26 +39,26 @@ mod tests {
     use super::*;
 
     #[test]
-    fn check_if_number_range_is_contained_in_other_or_viceversa() {
-        assert_eq!(one_of_fully_contained_in((2, 8), (3, 7)), true);
-        assert_eq!(one_of_fully_contained_in((6, 6), (4, 6)), true);
-        assert_eq!(one_of_fully_contained_in((2, 4), (6, 8)), false)
+    fn check_if_number_range_is_contained_in_other() {
+        assert_eq!(fully_contained_in((3, 7), (2, 8)), true);
+        assert_eq!(fully_contained_in((6, 6), (4, 6)), true);
+        assert_eq!(fully_contained_in((2, 4), (6, 8)), false)
     }
 
     #[test]
     fn test_example_part_1() {
         let input = "2-4,6-8\n2-3,4-5\n5-7,7-9\n2-8,3-7\n6-6,4-6\n2-6,4-8".to_string();
 
-        assert_eq!(sum_of_overlap(input, one_of_fully_contained_in), 2)
+        assert_eq!(sum_of_overlap(input, fully_contained_in), 2)
     }
 
     #[test]
     fn overlaps() {
-        assert_eq!(one_of_partially_contained_in((5, 7), (7, 9)), true);
-        assert_eq!(one_of_partially_contained_in((2, 8), (3, 7)), true);
-        assert_eq!(one_of_partially_contained_in((6, 6), (4, 6)), true);
-        assert_eq!(one_of_partially_contained_in((2, 6), (4, 8)), true);
-        assert_eq!(one_of_partially_contained_in((2, 4), (6, 8)), false);
-        assert_eq!(one_of_partially_contained_in((2, 3), (4, 5)), false);
+        assert_eq!(partially_contained_in((5, 7), (7, 9)), true);
+        assert_eq!(partially_contained_in((2, 8), (3, 7)), true);
+        assert_eq!(partially_contained_in((4, 6), (6, 6)), true);
+        assert_eq!(partially_contained_in((2, 6), (4, 8)), true);
+        assert_eq!(partially_contained_in((2, 4), (6, 8)), false);
+        assert_eq!(partially_contained_in((2, 3), (4, 5)), false);
     }
 }

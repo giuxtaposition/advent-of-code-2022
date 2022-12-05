@@ -9,16 +9,11 @@ pub fn part2_top_crates_calculator(input: String) -> String {
 }
 
 fn top_crates_calculator(input: String, keep_order: bool) -> String {
-    let mut parts = input.split("\n\n");
-
-    let (stacks_schema, instructions): (Vec<&str>, Vec<&str>) = (
-        parts.next().unwrap().lines().collect(),
-        parts.next().unwrap().lines().collect(),
-    );
+    let (stacks_schema, instructions) = input.split_once("\n\n").unwrap();
 
     let mut stacks = parse_stacks_schema(stacks_schema);
 
-    for instruction in instructions {
+    for instruction in instructions.lines() {
         stacks = move_crate(instruction, stacks, keep_order);
     }
 
@@ -42,8 +37,8 @@ impl FromStr for Instruction {
 
         Ok(Self {
             amount: container[0],
-            from: container[1],
-            to: container[2],
+            from: container[1] - 1,
+            to: container[2] - 1,
         })
     }
 }
@@ -51,29 +46,22 @@ impl FromStr for Instruction {
 fn top_crates(stacks: Vec<Vec<char>>) -> String {
     stacks
         .iter()
-        .map(|stack| {
-            let mut chars = stack.clone();
-            chars.pop().unwrap()
-        })
+        .filter_map(|stack| stack.iter().last())
         .collect::<String>()
 }
 
-fn parse_stacks_schema(mut input: Vec<&str>) -> Vec<Vec<char>> {
-    let stack_size = input
-        .pop()
-        .unwrap()
-        .chars()
+fn parse_stacks_schema(stacks_schema: &str) -> Vec<Vec<char>> {
+    let (stacks_str, stacks_numbers) = stacks_schema.rsplit_once('\n').unwrap();
+    let stack_size = stacks_numbers
+        .split_whitespace()
         .last()
         .unwrap()
-        .to_digit(10)
-        .unwrap()
-        .try_into()
+        .parse()
         .unwrap();
-    let stacks_schema: Vec<String> = input.iter().map(|line| normalize(line)).collect();
 
     let mut result: Vec<Vec<char>> = vec![Vec::new(); stack_size];
 
-    stacks_schema.iter().rev().for_each(|line| {
+    stacks_str.lines().map(normalize).rev().for_each(|line| {
         line.chars().enumerate().for_each(|(index, char)| {
             if char.is_alphabetic() {
                 result[index].push(char.to_owned())
@@ -91,16 +79,16 @@ fn move_crate(
 ) -> Vec<Vec<char>> {
     let instruction = instruction_string.parse::<Instruction>().unwrap();
 
-    let n_cargo_to_keep = stacks[instruction.from - 1].len() - instruction.amount;
+    let n_cargo_to_keep = stacks[instruction.from].len() - instruction.amount;
 
-    let mut stack_to_update = stacks[instruction.from - 1].split_off(n_cargo_to_keep);
+    let mut stack_to_update = stacks[instruction.from].split_off(n_cargo_to_keep);
 
     if !keep_order {
         stack_to_update.reverse()
     }
 
     stack_to_update.iter().for_each(|cargo_to_move| {
-        stacks[instruction.to - 1].push(*cargo_to_move);
+        stacks[instruction.to].push(*cargo_to_move);
     });
 
     stacks
@@ -128,7 +116,7 @@ mod tests {
 
     #[test]
     fn parse_schema_correctly() {
-        let input = vec!["    [D]    ", "[N] [C]   ", "[Z] [M] [P]", "1   2   3"];
+        let input = "    [D]    \n[N] [C]   \n[Z] [M] [P]\n1   2   3";
         let expected_result: Vec<Vec<char>> = vec![vec!['Z', 'N'], vec!['M', 'C', 'D'], vec!['P']];
 
         assert_eq!(parse_stacks_schema(input), expected_result)
