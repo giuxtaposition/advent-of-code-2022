@@ -1,16 +1,9 @@
-use std::fs;
+pub fn part1_sum_of_overlap(assignments: String) -> usize {
+    sum_of_overlap(assignments, one_of_fully_contained_in)
+}
 
-fn main() {
-    let contents = fs::read_to_string("input.txt").expect("Should have been able to read the file");
-
-    println!(
-        "{}",
-        sum_of_overlap(contents.clone(), one_of_fully_contained_in)
-    );
-    println!(
-        "{}",
-        sum_of_overlap(contents, one_of_partially_contained_in)
-    );
+pub fn part2_sum_of_overlap(assignments: String) -> usize {
+    sum_of_overlap(assignments, one_of_partially_contained_in)
 }
 
 fn sum_of_overlap(

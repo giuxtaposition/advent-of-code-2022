@@ -1,21 +1,22 @@
-use std::{fs, str::FromStr};
+use std::str::FromStr;
 
-fn main() {
-    let contents = fs::read_to_string("input.txt").expect("Should have been able to read the file");
-
-    println!("part1: {}", top_crates_calculator(contents.clone(), false));
-    println!("part2: {}", top_crates_calculator(contents, true))
+pub fn part1_top_crates_calculator(input: String) -> String {
+    top_crates_calculator(input, false)
 }
 
-fn top_crates_calculator(contents: String, keep_order: bool) -> String {
-    let mut parts = contents.split("\n\n");
+pub fn part2_top_crates_calculator(input: String) -> String {
+    top_crates_calculator(input, true)
+}
 
-    let (schema, instructions): (Vec<&str>, Vec<&str>) = (
+fn top_crates_calculator(input: String, keep_order: bool) -> String {
+    let mut parts = input.split("\n\n");
+
+    let (stacks_schema, instructions): (Vec<&str>, Vec<&str>) = (
         parts.next().unwrap().lines().collect(),
         parts.next().unwrap().lines().collect(),
     );
 
-    let mut stacks = parse_schema(schema);
+    let mut stacks = parse_stacks_schema(stacks_schema);
 
     for instruction in instructions {
         stacks = move_crate(instruction, stacks, keep_order);
@@ -57,7 +58,7 @@ fn top_crates(stacks: Vec<Vec<char>>) -> String {
         .collect::<String>()
 }
 
-fn parse_schema(mut input: Vec<&str>) -> Vec<Vec<char>> {
+fn parse_stacks_schema(mut input: Vec<&str>) -> Vec<Vec<char>> {
     let stack_size = input
         .pop()
         .unwrap()
@@ -130,7 +131,7 @@ mod tests {
         let input = vec!["    [D]    ", "[N] [C]   ", "[Z] [M] [P]", "1   2   3"];
         let expected_result: Vec<Vec<char>> = vec![vec!['Z', 'N'], vec!['M', 'C', 'D'], vec!['P']];
 
-        assert_eq!(parse_schema(input), expected_result)
+        assert_eq!(parse_stacks_schema(input), expected_result)
     }
 
     #[test]

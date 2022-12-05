@@ -1,8 +1,16 @@
-pub fn calories_calculator(contents: String) -> Vec<i32> {
+pub fn part1_top_calories(calories_list: String) -> i32 {
+    sum_of_greatest_numbers(calories_calculator(calories_list), 1)
+}
+
+pub fn part2_top_3_calories(calories_list: String) -> i32 {
+    sum_of_greatest_numbers(calories_calculator(calories_list), 3)
+}
+
+fn calories_calculator(calories_list: String) -> Vec<i32> {
     let mut sum: Vec<i32> = vec![0];
     let mut index: usize = 0;
 
-    for line in contents.lines() {
+    for line in calories_list.lines() {
         match line.is_empty() {
             true => {
                 index = index + 1;
@@ -18,7 +26,7 @@ pub fn calories_calculator(contents: String) -> Vec<i32> {
     sum
 }
 
-pub fn sum_of_greatest_numbers(mut numbers: Vec<i32>, number_of_results: usize) -> i32 {
+fn sum_of_greatest_numbers(mut numbers: Vec<i32>, number_of_results: usize) -> i32 {
     numbers.sort_by(|a, b| b.partial_cmp(a).unwrap());
 
     numbers.split_at(number_of_results).0.to_vec().iter().sum()

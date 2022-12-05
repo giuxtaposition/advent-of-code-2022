@@ -1,13 +1,4 @@
-use std::fs;
-
-fn main() {
-    let contents = fs::read_to_string("input.txt").expect("Should have been able to read the file");
-
-    println!("{}", part_1_priorities_sum(contents.clone()));
-    println!("{}", part_2_priorities_sum(contents))
-}
-
-fn part_2_priorities_sum(input: String) -> i32 {
+pub fn part2_priorities_sum(input: String) -> i32 {
     input
         .lines()
         .collect::<Vec<&str>>()
@@ -20,7 +11,7 @@ fn part_2_priorities_sum(input: String) -> i32 {
         .sum()
 }
 
-fn part_1_priorities_sum(input: String) -> i32 {
+pub fn part1_priorities_sum(input: String) -> i32 {
     input
         .lines()
         .into_iter()
@@ -100,7 +91,7 @@ mod tests {
     fn test_example_part_1() {
         let input = "vJrwpWtwJgWrhcsFMMfFFhFp\njqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL\nPmmdzqPrVvPwwTWBwg\nwMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\nttgJtRGJQctTZtZT\nCrZsJsPPZsGzwwsLwLmpwMDw".to_string();
 
-        assert_eq!(part_1_priorities_sum(input), 157)
+        assert_eq!(part1_priorities_sum(input), 157)
     }
 
     #[test]
@@ -116,6 +107,6 @@ mod tests {
     fn test_example_part_2() {
         let input ="vJrwpWtwJgWrhcsFMMfFFhFp\njqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL\nPmmdzqPrVvPwwTWBwg\nwMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\nttgJtRGJQctTZtZT\nCrZsJsPPZsGzwwsLwLmpwMDw".to_string();
 
-        assert_eq!(part_2_priorities_sum(input), 70);
+        assert_eq!(part2_priorities_sum(input), 70);
     }
 }

@@ -33,7 +33,7 @@ impl From<&str> for RoundResult {
     }
 }
 
-pub fn rounds_points_calculator_part1(rounds: &String) -> i32 {
+pub fn part1_rounds_points_calculator(rounds: String) -> i32 {
     rounds
         .lines()
         .map(|round| {
@@ -43,7 +43,7 @@ pub fn rounds_points_calculator_part1(rounds: &String) -> i32 {
         .sum()
 }
 
-pub fn rounds_points_calculator_part2(rounds: &String) -> i32 {
+pub fn part2_rounds_points_calculator(rounds: String) -> i32 {
     rounds
         .lines()
         .map(|round| {
@@ -115,18 +115,18 @@ mod tests {
     fn read_matches_correctly() {
         let lines = "A X\nA Y\nA Z\nB X\nB Y\nB Z\nC X\nC Y\nC Z\n".to_string();
         let expected_result = 45;
-        assert_eq!(expected_result, rounds_points_calculator_part1(&lines));
+        assert_eq!(expected_result, part1_rounds_points_calculator(lines));
     }
 
     #[test]
     fn test_example_part_1() {
         let example = "A Y\nB X\nC Z".to_string();
-        assert_eq!(rounds_points_calculator_part1(&example), 15);
+        assert_eq!(part1_rounds_points_calculator(example), 15);
     }
 
     #[test]
     fn test_example_part_2() {
         let example = "A Y\nB X\nC Z".to_string();
-        assert_eq!(rounds_points_calculator_part2(&example), 12);
+        assert_eq!(part2_rounds_points_calculator(example), 12);
     }
 }
