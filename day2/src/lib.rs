@@ -11,7 +11,7 @@ impl From<&str> for Shape {
             "A" | "X" => Self::Rock,
             "B" | "Y" => Self::Paper,
             "C" | "Z" => Self::Scissors,
-            &_ => panic!("Could not parse value to shape"),
+            &_ => panic!("Value not supported"),
         }
     }
 }
@@ -28,7 +28,7 @@ impl From<&str> for RoundResult {
             "X" => Self::Loss,
             "Y" => Self::Draw,
             "Z" => Self::Win,
-            &_ => panic!("Could not parse value to shape"),
+            &_ => panic!("Value not supported"),
         }
     }
 }
