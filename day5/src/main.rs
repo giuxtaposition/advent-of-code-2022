@@ -3,10 +3,11 @@ use std::fs;
 fn main() {
     let contents = fs::read_to_string("input.txt").expect("Should have been able to read the file");
 
-    println!("{}", part_1_top_crates(contents))
+    println!("part1: {}", top_crates_calculator(contents.clone(), false));
+    println!("part2: {}", top_crates_calculator(contents, true))
 }
 
-fn part_1_top_crates(contents: String) -> String {
+fn top_crates_calculator(contents: String, keep_order: bool) -> String {
     let lines = contents.lines().collect::<Vec<&str>>();
 
     let position = lines.iter().position(|line| line.is_empty());
@@ -17,7 +18,7 @@ fn part_1_top_crates(contents: String) -> String {
 
     for instruction in instructions {
         if !instruction.is_empty() {
-            parsed_schema = move_crate(instruction, parsed_schema);
+            parsed_schema = move_crate(instruction, parsed_schema, keep_order);
         }
     }
 
@@ -60,18 +61,24 @@ fn parse_schema(mut input: Vec<&str>) -> Vec<Vec<char>> {
     result
 }
 
-fn move_crate(instructions_string: &str, mut stacks: Vec<Vec<char>>) -> Vec<Vec<char>> {
+fn move_crate(
+    instructions_string: &str,
+    mut stacks: Vec<Vec<char>>,
+    keep_order: bool,
+) -> Vec<Vec<char>> {
     let instructions = parse_instruction(instructions_string);
 
     let n_cargo_to_keep = stacks[instructions[1] - 1].len() - instructions[0];
 
-    stacks[instructions[1] - 1]
-        .split_off(n_cargo_to_keep)
-        .iter()
-        .rev()
-        .for_each(|cargo_to_move| {
-            stacks[instructions[2] - 1].push(*cargo_to_move);
-        });
+    let mut stack_to_update = stacks[instructions[1] - 1].split_off(n_cargo_to_keep);
+
+    if !keep_order {
+        stack_to_update.reverse()
+    }
+
+    stack_to_update.iter().for_each(|cargo_to_move| {
+        stacks[instructions[2] - 1].push(*cargo_to_move);
+    });
 
     stacks
 }
@@ -116,7 +123,8 @@ mod tests {
         assert_eq!(
             move_crate(
                 "move 1 from 2 to 1",
-                vec![vec!['Z', 'N'], vec!['M', 'C', 'D'], vec!['P']]
+                vec![vec!['Z', 'N'], vec!['M', 'C', 'D'], vec!['P']],
+                false
             ),
             vec![vec!['Z', 'N', 'D'], vec!['M', 'C'], vec!['P']]
         );
@@ -124,7 +132,8 @@ mod tests {
         assert_eq!(
             move_crate(
                 "move 3 from 1 to 3",
-                vec![vec!['Z', 'N', 'D'], vec!['M', 'C'], vec!['P']]
+                vec![vec!['Z', 'N', 'D'], vec!['M', 'C'], vec!['P']],
+                false
             ),
             vec![vec![], vec!['M', 'C'], vec!['P', 'D', 'N', 'Z']]
         )
@@ -135,6 +144,27 @@ mod tests {
         assert_eq!(
             top_crates(vec![vec!['Z', 'N'], vec!['M', 'C', 'D'], vec!['P']]),
             "NDP"
+        )
+    }
+
+    #[test]
+    fn move_crates_to_correct_stack_keeping_order() {
+        assert_eq!(
+            move_crate(
+                "move 1 from 2 to 1",
+                vec![vec!['Z', 'N'], vec!['M', 'C', 'D'], vec!['P']],
+                true
+            ),
+            vec![vec!['Z', 'N', 'D'], vec!['M', 'C'], vec!['P']]
+        );
+
+        assert_eq!(
+            move_crate(
+                "move 3 from 1 to 3",
+                vec![vec!['Z', 'N', 'D'], vec!['M', 'C'], vec!['P']],
+                true
+            ),
+            vec![vec![], vec!['M', 'C'], vec!['P', 'Z', 'N', 'D']]
         )
     }
 }
