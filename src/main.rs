@@ -13,6 +13,7 @@ fn main() {
         day4 part2: {:?}
         day5 part1: {:?}
         day5 part2: {:?}
+        day6 part1: {:?}
         ",
         day1::part1_top_calories(utils::read_input("day1/input.txt")),
         day1::part2_top_3_calories(utils::read_input("day1/input.txt")),
@@ -23,6 +24,7 @@ fn main() {
         day4::part1_sum_of_overlap(utils::read_input("day4/input.txt")),
         day4::part2_sum_of_overlap(utils::read_input("day4/input.txt")),
         day5::part1_top_crates_calculator(utils::read_input("day5/input.txt")),
-        day5::part2_top_crates_calculator(utils::read_input("day5/input.txt"))
+        day5::part2_top_crates_calculator(utils::read_input("day5/input.txt")),
+        day6::part1_find_start_of_packet_marker(utils::read_input("day6/input.txt"))
     );
 }
