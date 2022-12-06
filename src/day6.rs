@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 pub fn part2_find_start_of_packet_marker(datastream: String) -> usize {
     parse(datastream.as_str(), 14)
 }
@@ -7,28 +9,15 @@ pub fn part1_find_start_of_packet_marker(datastream: String) -> usize {
 }
 
 fn parse(datastream: &str, number_of_uniques: usize) -> usize {
-    let mut unique_chars: Vec<char> = vec![];
-    let mut count = 0;
+    let (index, _) = datastream
+        .chars()
+        .collect::<Vec<char>>()
+        .windows(number_of_uniques)
+        .enumerate()
+        .find(|(_, char)| HashSet::<&char>::from_iter(char.iter()).len() == number_of_uniques)
+        .unwrap();
 
-    for (index, char) in datastream.chars().enumerate() {
-        if unique_chars.len() < number_of_uniques && !unique_chars.contains(&char) {
-            unique_chars.push(char);
-        } else {
-            let mut after_double_found = unique_chars.split(|doubled| doubled == &char);
-
-            after_double_found.next();
-
-            unique_chars = after_double_found.next().unwrap().to_vec();
-            unique_chars.push(char);
-        }
-
-        if unique_chars.len() == number_of_uniques {
-            count = index + 1;
-            break;
-        }
-    }
-
-    count
+    index + number_of_uniques
 }
 
 #[cfg(test)]
