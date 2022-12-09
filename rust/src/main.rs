@@ -17,6 +17,7 @@ fn main() {
         🎄 day6 part2: {:?} 🎄
         🎄 day7 part1: {:?} 🎄
         🎄 day7 part2: {:?} 🎄
+        🎄 day8 part1: {:?} 🎄
         ",
         day1::part1_top_calories(utils::read_input("day1/input.txt")),
         day1::part2_top_3_calories(utils::read_input("day1/input.txt")),
@@ -33,6 +34,7 @@ fn main() {
         day7::part1_sum_of_sizes_with_directories_less_than_1000(utils::read_input(
             "day7/input.txt"
         )),
-        day7::part2_total_size_of_directory_to_delete(utils::read_input("day7/input.txt"))
+        day7::part2_total_size_of_directory_to_delete(utils::read_input("day7/input.txt")),
+        day8::part1_visible_trees(utils::read_input("day8/input.txt")),
     );
 }
