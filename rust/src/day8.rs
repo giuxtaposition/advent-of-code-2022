@@ -12,11 +12,11 @@ fn visible_trees(grid: Vec<u32>, grid_width: usize, grid_height: usize) -> usize
 }
 
 fn to_grid(input: &str) -> (Vec<u32>, usize, usize) {
-    let lines = input.lines();
-    let lines_vec = lines.clone().collect::<Vec<&str>>();
+    let lines_vec = input.lines().collect::<Vec<&str>>();
 
     (
-        lines
+        lines_vec
+            .iter()
             .flat_map(|row| row.chars().map(|char| char.to_digit(10).unwrap()))
             .collect(),
         lines_vec.len(),
@@ -25,25 +25,14 @@ fn to_grid(input: &str) -> (Vec<u32>, usize, usize) {
 }
 
 fn is_visible(grid: &[u32], grid_width: usize, grid_height: usize, index: usize) -> bool {
-    if is_external_cell(grid_width, grid_height, index) {
-        return true;
-    }
-
-    if is_visible_in_row(grid, grid_width, index) {
-        return true;
-    }
-
-    if is_visible_in_column(grid, grid_width, grid_height, index) {
-        return true;
-    }
-
-    false
+    is_external_cell(grid_width, grid_height, index)
+        || is_visible_in_row(grid, grid_width, index)
+        || is_visible_in_column(grid, grid_width, grid_height, index)
 }
 
 fn is_visible_in_column(grid: &[u32], grid_width: usize, grid_height: usize, index: usize) -> bool {
     let mut current_cell = index - grid_width;
     let mut is_visible_top = true;
-    let mut is_visible_bottom = true;
 
     while current_cell > 0 {
         if grid[index] <= grid[current_cell] {
@@ -54,24 +43,28 @@ fn is_visible_in_column(grid: &[u32], grid_width: usize, grid_height: usize, ind
         current_cell = current_cell.saturating_sub(grid_width)
     }
 
-    current_cell = index + grid_width;
+    if !is_visible_top {
+        let mut is_visible_bottom = true;
+        current_cell = index + grid_width;
 
-    while current_cell < grid_width * grid_height {
-        if grid[index] <= grid[current_cell] {
-            is_visible_bottom = false;
-            break;
+        while current_cell < grid_width * grid_height {
+            if grid[index] <= grid[current_cell] {
+                is_visible_bottom = false;
+                break;
+            }
+
+            current_cell += grid_width
         }
 
-        current_cell += grid_width
+        is_visible_bottom
+    } else {
+        is_visible_top
     }
-
-    is_visible_top || is_visible_bottom
 }
 
 fn is_visible_in_row(grid: &[u32], grid_width: usize, index: usize) -> bool {
     let mut current_cell = index - 1;
     let mut is_visible_left = true;
-    let mut is_visible_right = true;
 
     loop {
         if (current_cell + 1) % grid_width == 0 {
@@ -83,36 +76,38 @@ fn is_visible_in_row(grid: &[u32], grid_width: usize, index: usize) -> bool {
             break;
         }
 
-        if let Some(next_current_cell) = current_cell.checked_sub(1) {
-            current_cell = next_current_cell
-        } else {
-            break;
-        }
+        current_cell = current_cell.saturating_sub(1)
     }
 
-    current_cell = index + 1;
+    if !is_visible_left {
+        let mut is_visible_right = true;
+        current_cell = index + 1;
 
-    loop {
-        if current_cell % grid_width == 0 {
-            break;
+        loop {
+            if current_cell % grid_width == 0 {
+                break;
+            }
+
+            if grid[index] <= grid[current_cell] {
+                is_visible_right = false;
+                break;
+            }
+
+            current_cell += 1;
         }
-
-        if grid[index] <= grid[current_cell] {
-            is_visible_right = false;
-            break;
-        }
-
-        current_cell += 1;
+        is_visible_right
+    } else {
+        is_visible_left
     }
-
-    is_visible_left || is_visible_right
 }
 
 fn is_external_cell(grid_width: usize, grid_height: usize, index: usize) -> bool {
-    index < grid_width
-        || index > (grid_height * grid_width - grid_width)
-        || index % grid_width == 0
-        || (index + 1) % grid_width == 0
+    let is_first_row = index < grid_width;
+    let is_last_row = index > (grid_height * grid_width - grid_width);
+    let is_first_column = (index + 1) % grid_width == 0;
+    let is_last_column = index % grid_width == 0;
+
+    is_first_row || is_last_row || is_first_column || is_last_column
 }
 
 #[cfg(test)]
