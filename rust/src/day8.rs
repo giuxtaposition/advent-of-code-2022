@@ -2,6 +2,23 @@ pub fn part1_visible_trees(input: String) -> usize {
     visible_trees(&to_grid(&input))
 }
 
+pub fn part2_highest_scenic_score(input: String) -> u32 {
+    highest_scenic_score(&to_grid(&input))
+}
+
+fn highest_scenic_score(grid: &Vec<Vec<u32>>) -> u32 {
+    grid.iter()
+        .enumerate()
+        .flat_map(|(x, row)| {
+            row.iter()
+                .enumerate()
+                .map(|(y, _)| scenic_score(grid, x, y))
+                .collect::<Vec<u32>>()
+        })
+        .max()
+        .unwrap()
+}
+
 fn visible_trees(grid: &Vec<Vec<u32>>) -> usize {
     grid.iter()
         .enumerate()
@@ -14,14 +31,61 @@ fn visible_trees(grid: &Vec<Vec<u32>>) -> usize {
         .sum()
 }
 
+fn scenic_score(grid: &Vec<Vec<u32>>, x: usize, y: usize) -> u32 {
+    if x == 0 || y == 0 || x == grid.len() - 1 || y == grid[x].len() - 1 {
+        return 0;
+    }
+
+    let mut left = 0;
+    for cell in grid[x][..y].iter().rev() {
+        left += 1;
+
+        println!("cell {}", cell);
+
+        if grid[x][y] <= *cell {
+            break;
+        }
+    }
+
+    let mut right = 0;
+    for cell in grid[x][y + 1..].iter() {
+        right += 1;
+
+        if grid[x][y] <= *cell {
+            break;
+        }
+    }
+
+    let mut top = 0;
+    for row in grid[..x].iter().rev() {
+        top += 1;
+
+        if grid[x][y] <= row[y] {
+            break;
+        }
+    }
+
+    let mut bottom = 0;
+    for row in grid[(x + 1)..].iter() {
+        bottom += 1;
+        if grid[x][y] <= row[y] {
+            break;
+        }
+    }
+
+    top * left * right * bottom
+}
+
 fn is_visible(grid: &Vec<Vec<u32>>, x: usize, y: usize) -> bool {
     if x == 0 || y == 0 || x == grid.len() - 1 || y == grid[x].len() - 1 {
         return true;
     }
+
     let left = *grid[x][..y].iter().max().unwrap() < grid[x][y];
     let right = *grid[x][y + 1..].iter().max().unwrap() < grid[x][y];
     let top = grid[..x].iter().map(|row| row[y]).max().unwrap() < grid[x][y];
     let bottom = grid[x + 1..].iter().map(|row| row[y]).max().unwrap() < grid[x][y];
+
     left || right || top || bottom
 }
 
@@ -98,5 +162,23 @@ mod tests {
             vec![3, 5, 3, 9, 0],
         ];
         assert_eq!(visible_trees(&trees_grid), 21)
+    }
+
+    #[test]
+    fn part1_example_test() {
+        let input = "30373\n25512\n65332\n33549\n35390".to_string();
+
+        assert_eq!(part1_visible_trees(input), 21)
+    }
+
+    #[test]
+    fn single_tree_scenic_score() {
+        let grid = to_grid("30373\n25512\n65332\n33549\n35390");
+
+        assert_eq!(scenic_score(&grid, 1, 2), 4);
+
+        let grid = to_grid("30373\n25512\n65332\n33549\n35390");
+
+        assert_eq!(scenic_score(&grid, 3, 2), 8)
     }
 }
